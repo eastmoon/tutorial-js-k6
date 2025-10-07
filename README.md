@@ -111,3 +111,4 @@ export function teardown(data) { ... }
         + [Load test types](https://grafana.com/docs/k6/latest/testing-guides/test-types/)
 + 文獻
     - [讓開發人員如沐春風的壓力測試工具 - K6](https://blog.darkthread.net/blog/k6-load-testing/)
+    - [Postman to k6 - Github](https://github.com/apideck-libraries/postman-to-k6)
