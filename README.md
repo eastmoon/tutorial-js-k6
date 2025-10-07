@@ -53,6 +53,48 @@ Grafana k6 是一個開源、友善開發人員且可擴展的負載測試工具
 + JMeter 基於 Java 語言設計，有較廣大的開源資源來擴大服務，K6 基於 Go 語言設計，以輕量低資源運用為主軸
 + JMeter 可運用於不同的協議，K6 專注於 WebAPI 協議
 
+### 測試項結構
+
+Grafana K6 是一套用於負載測試的工具，其每個測試項本身即為一份測試腳本檔，但 K6 並不會管理這些腳本檔，因此若要選擇要執行的測試項或循環執行多個測試項則需要自行撰寫 Shell 處理。
+
+而每個測試腳本檔，其結構如同範本 [test-api.js](./app/test-api.js)，其中最主要為三個部分：
+
++ 宣告函示庫
+```
+// 匯入 http 模組，來自 k6/http
+import http from 'k6/http'
+// 匯入 check，sleep 函數工具，來自 k6
+import { check, sleep } from 'k6'
+```
++ 宣告 K6 測試選項參數
+```
+// 設定 k6 測試選項
+export const options = {
+  // 設定此測試項要執行的次數
+  iterations: 500,
+  // 測試要開啟多少虛擬用戶 ( VUs、Virtual Users )
+  vus: 5
+};
+```
++ 宣告 K6 測試須執行的函數
+```
+// 測試項啟動函數，在每個 UVs 執行前，僅執行一次的函數
+export function setup() { ... }
+// 每個虛擬用戶要反覆執行的函數
+export default function () { ... }
+// 測試項完成所有執行次數後，僅執行一次的函數
+export function teardown(data) { ... }
+```
+
+在此需要注意，一個負載測試會考慮兩個參數：
+
+1. 要執行次數 ( iterations ) 或執行時間 ( duration )
+2. 要啟用多少個虛擬用戶 ( Virtual Users )
+
+若為執行 1000 次數，且為 10 位虛擬用戶，則負載測試會用每位用戶執行 100 次來統計總執行時間。
+
+若為執行 1000 毫秒，且為 10 位虛擬用戶，則負載測試會用每位用戶執行 1000 毫秒來統計總執行次數。
+
 ## 文獻
 
 + [Grafana k6](https://grafana.com/docs/k6)
